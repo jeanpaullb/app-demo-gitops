@@ -27,7 +27,7 @@ spec:
       containers:
       - name: postgresql
         imagePullPolicy: Always
-        image: postgresql:latest
+        image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql@sha256:3a260b1a031cae02a86f0201592342e0368060b8fcc4b986443597bc04482935
         env:
         - name: POSTGRESQL_USER
           value: gitea
