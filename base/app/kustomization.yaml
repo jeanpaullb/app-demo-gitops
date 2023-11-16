@@ -1,8 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- configmap-app-properties.yaml
+- argocd-env-configmap.yaml
+- argocd-env-secret.yaml
 - deployment.yaml
+- sa-pipeline.yaml
 - service.yaml
 - route.yaml
 

@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-   name: app-config
-data:
-  config.properties: |-
-      quarkus.datasource.db-kind=h2
-      quarkus.hibernate-orm.dialect=org.hibernate.dialect.H2Dialect
-      quarkus.hibernate-orm.database.generation=none    
