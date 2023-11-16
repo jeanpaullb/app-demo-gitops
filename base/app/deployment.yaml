@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-api
+  labels:
+    app: app-api
+    deployment: app-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-api
+  template:
+    metadata:
+      labels:
+        app: app-api
+        deployment: app-api
+    spec:
+      initContainers:
+        - name: liquibase
+          image: liquibase
+          env:
+            - name: URL
+              value: 'jdbc:h2:tcp://h2:9092/db'
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: USERNAME
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: PASSWORD
+            - name: CHANGELOGFILE
+              value: master.xml
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              memory: 512Mi
+          volumeMounts:
+            - mountPath: /liquibase/changelog
+              name: changelog
+            # - name: liquibase-sql
+            #   mountPath: /liquibase/sql/db.changelog-3.0
+      containers:
+        - name: app-api
+          image: app-api
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+            - name: credentials-volume
+              mountPath: /secrets
+          env:
+            - name: QUARKUS_CONFIG_LOCATIONS
+              value: "file:/config/config.properties,file:/secrets/credentials.properties"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              memory: 512Mi
+      volumes:
+        - name: config-volume
+          configMap:
+            name: app-config
+        - name: credentials-volume
+          secret:
+            secretName: db-credentials
+        - name: changelog
+          configMap:
+            name: liquibase-changelogs

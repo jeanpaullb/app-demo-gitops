@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-api
+spec:
+  template:
+    spec:
+      containers:        
+        - name: app-api
+      initContainers:
+        - name: liquibase
+          env:
+            - name: URL
+              value: 'jdbc:h2:tcp://h2:9092/test'

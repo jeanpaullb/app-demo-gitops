@@ -1,0 +1,23 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: liquibase
+spec:
+  output:
+    to:
+      name: image-registry.openshift-image-registry.svc:5000/app-demo-test/liquibase:latest
+  source:
+    dockerfile: >-
+      FROM liquibase/liquibase:4.9.1
+
+      ENV URL=jdbc:h2:tcp://h2:9092/test
+
+      ENV USERNAME=sa
+
+      ENV PASSWORD=
+
+      ENV CHANGELOGFILE=changelog.xml
+
+      CMD ["sh", "-c", "docker-entrypoint.sh --url=${URL} --username=${USERNAME}
+      --password=${PASSWORD} --classpath=/liquibase/changelog
+      --changeLogFile=${CHANGELOGFILE} update"]

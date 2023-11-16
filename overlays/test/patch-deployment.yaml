@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-api
+spec:
+  template:
+    spec:
+      containers:        
+        - name: app-api
+          image: image-registry.openshift-image-registry.svc:5000/app-demo-test/app-api:latest
+      initContainers:
+        - name: liquibase
+          env:
+            - name: URL
+              value: 'jdbc:h2:tcp://h2:9092/test'

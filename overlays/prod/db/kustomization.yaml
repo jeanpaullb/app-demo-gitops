@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../../base/h2
+- ../../../base/liquibase
+# - sealedsecret-secret-db.yaml
+patchesStrategicMerge:
+- patch-buildconfig-liquibase.yaml
+configMapGenerator:
+- name: liquibase-changelogs
+  behavior: merge
+  files:
+  - changelog/master.xml
+
+images:
+  - name: h2
+    newName: image-registry.openshift-image-registry.svc:5000/app-demo-prod/h2
+    newTag: "latest"
